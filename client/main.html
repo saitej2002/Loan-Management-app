@@ -1,0 +1,63 @@
+<head>
+  <title>Loan Management</title>
+</head>
+
+<body>
+  <h1>Welcome to Loan Management</h1>
+
+  {{> registerForm}}
+  {{> loanRequestForm}}
+
+  {{#if currentUser}}
+    {{> userDashboard}}
+  {{/if}}
+
+  {{#if currentUserIsAdmin}}
+    {{> adminDashboard}}
+  {{/if}}
+
+  <template name="registerForm">
+    <form>
+      <input type="email" name="email" placeholder="Email">
+      <select name="role">
+        <option value="admin">Admin</option>
+        <option value="borrower">Borrower</option>
+        <option value="lender">Lender</option>
+      </select>
+      <button type="button" onclick="registerUser()">Register</button>
+    </form>
+  </template>
+
+  <template name="loanRequestForm">
+    {{#if currentUserIsBorrower}}
+      <form>
+        <button type="button" onclick="requestLoan()">Request Loan</button>
+      </form>
+    {{/if}}
+  </template>
+
+  <template name="userDashboard">
+    <h2>User Dashboard</h2>
+    <p>Status: {{currentUser.status}}</p>
+    {{#if currentUserIsBorrower}}
+      <h3>Loan History</h3>
+      {{#each loans}}
+        <p>{{status}}</p>
+      {{/each}}
+    {{/if}}
+    {{#if currentUserIsLender}}
+      <h3>Loan Payments</h3>
+      {{#each loans}}
+        <button type="button" onclick="confirmPayment('{{_id}}')">Confirm Payment</button>
+      {{/each}}
+    {{/if}}
+  </template>
+
+  <template name="adminDashboard">
+    <h2>Admin Dashboard</h2>
+    <h3>Transactions</h3>
+    {{#each loans}}
+      <p>{{status}}</p>
+    {{/each}}
+  </template>
+</body>
